@@ -1,7 +1,7 @@
 # Ioana Nedelcu
 
 ## 25 June 2025
-Went through half of the Vue JS exercices, covered basic concepts such as reactivity and the use of v-if, v-bind, v-on and v-for.
+Went through half of the Vue JS exercices, covered basic concepts such as reactivity and the use of `v-if`, `v-bind`, `v-on` and `v-for`.
 
 ## 26 June 2025
 Finished the Vue JS exercices, delved into more complex topics like lifecycles and child components.
