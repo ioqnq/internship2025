@@ -30,3 +30,4 @@ Finished rustlings exercices at last. Started on the STM32f4 labs by setting up 
 ## 4 July 2025
 Looked over the labs proper. We struggled for a while on exercice 9 of 'Lab 2 - GPIO', which involved making a function that takes a letter as an argument and displays it in morse code using 3 LEDs. After much testing we realised the problem stemmed from the fact that we hadn't included a pause between displaying each dot and dash, which explained why no matter which letter we called the function for, all LEDs only lit up once, at the same time. 
 
+
