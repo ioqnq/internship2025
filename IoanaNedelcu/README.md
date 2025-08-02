@@ -52,17 +52,17 @@ First problem has been resolved. Turns out all of the issues were created from a
 ## 22 July 2025
 Fixed something that I realised I broke by accident right before I left yesterday. Made it so that the issue is closed when it's up to date and reopened when new updates come in. Ran tests for each situation, as well as checked back on the case of new issue creation and everything seems to work as intended. Tomorrow I will start working on the checker that makes sure shas in the file were updated after a PR (tagged with a specific label).
 
-# 23 July 2025
+## 23 July 2025
 I finished writing the code for the sha-checker using a timestamp-check based approach but in the end I realised this wouldn't quite work. So instead I'll be checking if the PR contains our sha file within its list of changed files. I had a lot to research but it's gradually taking shape. Managed to extract PR number, list of files changed within it, as well as all of its labels.
 
-# 24 July 2025
+## 24 July 2025
 Started off by checking if the exclusive label is within the PR's label with simple string pattern matching. Applied the same logic to file checker. Ran negative and positive situation tests for both scenarios. Modified the paths and api links to suit the actual repos and not my dummy ones. The only step left is to create the label and .lastcommsha file in the repository.
 
-# 30 July 2025
+## 30 July 2025
 Finishing touches on my issue. Struggled a bit with the branching and PR creation but I got some help setting up an SSH key to make the proccess easier. Had to rename my commit to adhere to the 'Conventional Commits' check which also proved somewhat tricky.
 
-# 31 July 2025
+## 31 July 2025
 Started looking into which issue to pick up next. Right now I'm thinking of picking up one which someone else dropped, issue [#41](https://github.com/WyliodrinEmbeddedIoT/tockloader-rs/issues/48). Looked into 'micro:bit' and tockloader-rs installation.
 
-# 1 August 2025
+## 1 August 2025
 Succesfully installed tockloader. Looked over and understood the code that my colleague made for this issue, just have to test it. I've ran into a few issues while trying out the install command, I'll have to ask abt them next time at the office.
