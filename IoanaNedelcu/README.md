@@ -71,19 +71,19 @@ Succesfully installed tockloader. Looked over and understood the code that my co
 Installed `libtock-c` in order to build the example apps. Went in circles a little bit trying to fix an error that I get trying to connect to the micro:bit but I have a new lead that I will try tomorrow.
 
 ## 5 August 2025
-Turns out I was having debug probe connection problems because the board was connected in maintenance mode. Install seems to work but the app ('blink' from the libtock-c examples) won't run. The installation log is also kind of vague, it just shows 16 pages being written with no completion message. Imported the working 'listen' command that my colleague developed and it's been helpful in troubleshooting. Tried installing a different app as well ('buttons'), same sitution. On 'info' and 'list' commands I get 'App data couldn't be parsed.'. I've been checking with the 'listen' command to observe if the number of bytes allocated to the code section changes after install. It did inbetween 'blink' installs but not after 'buttons' install. I should look over the 'install', 'info' and 'list' code, as well as make sure the '.tab' files aren't corrupted.
+Turns out I was having debug probe connection problems because the board was connected in maintenance mode. Install seems to work but the app ('blink' from the libtock-c examples) won't run. The installation log is also kind of vague, it just shows 16 pages being written with no completion message. Imported the working `listen` command that my colleague developed and it's been helpful in troubleshooting. Tried installing a different app as well ('buttons'), same sitution. On `info` and `list` commands I get *"App data couldn't be parsed."*. I've been checking with the 'listen' command to observe if the number of bytes allocated to the code section changes after install. It did inbetween 'blink' installs but not after 'buttons' install. I should look over the 'install', 'info' and 'list' code, as well as make sure the '.tab' files aren't corrupted.
 
 ## 6 August 2025
 Got a side task to do so I took a break from the issue I've been working on. Looked over a colleague's code to ensure all changes from upstream were carried over.
 
 ## 7 August 2025
-Got 'install' and 'info' commands to work (I wasn't calling them properly). In order to figure out where the problem stems from, I've managed to install an app using python tockloader's 'install' command. I've had problems getting the app to show with 'list' but it seems I was just not booting the 'micro:bit' in the right mode. I've had conflicts between the multiple iterations of tockloader I have installed but I got it figured out now.
+Got 'install' and 'info' commands to work (I wasn't calling them properly). In order to figure out where the problem stems from, I've managed to install an app using python tockloader's `install` command. I've had problems getting the app to show with `list` but it seems I was just not booting the micro:bit in the right mode. I've had conflicts between the multiple iterations of tockloader I have installed but I got it figured out now.
 
 ## 8 August 2025
-App installed with our command shows up on app list but won't start on boot (despite being the only app enabled). Getting 528 error since disabling the working app and I can't seem to put the board into bootloader mode again. As such, I am locked out of 'install', 'uninstall', 'enable' and 'disable' commands. I temporarily fixed the issue that supposedly erased the app region of the board but after changing modes the error is back. Should try 'listen' command to see how the memory allocation has changed.
+App installed with our command shows up on app list but won't start on boot (despite being the only app enabled). Getting 528 error since disabling the working app and I can't seem to put the board into bootloader mode again. As such, I am locked out of `install`, `uninstall`, `enable` and `disable` commands. I temporarily fixed the issue that supposedly erased the app region of the board but after changing modes the error is back. Should try `listen` command to see how the memory allocation has changed.
 
 ## 9 August 2025
-Tried install without using tockloader tools since I can't get into bootloader (probe?) mode. I tried quickly fixing the install I was given since it doesn't seem to require bootloader mode but this didn't really work out.
+Tried install without using tockloader tools since I can't get into bootloader mode. I tried quickly fixing the install I was given since it doesn't seem to require bootloader mode but this didn't really work out.
 
 ## 19 August 2025
 Started looking into a side issue ( [#83](https://github.com/WyliodrinEmbeddedIoT/tockloader-rs/issues/83) ) having to do with my first issue. Have to generate the downstream end variable using github actions instead of hardcoding it.
@@ -96,3 +96,18 @@ Realised workflow dispatch doesn't work from branches so I had to modify my mock
 
 ## 22 August 2025
 Looked more into the concepts of UPSTREAM and DOWNSTREAM repositories to make sure I fully grasp the task I was given for issue [#83](https://github.com/WyliodrinEmbeddedIoT/tockloader-rs/issues/83) . Also looked a bit into Markdown formatting and code snippet linking for more efficient communication within Github spaces. Did some finishing touches, squashed my commits and opened a pull request.
+
+## 25 August 2025
+Managed to reset the board, probe-mode works again. Apparently having multiple apps installed on the board isn't properly implemented so that may be part of the reason the board behaved the way it did. For now I'll try to understand both the tockloader-rs and tockloader install codes.
+
+## 26 August 2025
+Looked over the code, got a surface-level understanding of the two algorithms.
+
+## 27 August 2025
+Switched over to helping my colleague with his issue [#70](https://github.com/WyliodrinEmbeddedIoT/tockloader-rs/issues/70), as we're sharing the microbit. Got errors on parsing app data. We've had to reflash everything on the board again. Despite this we still ran into some weird errors and our board was taken to be looked over. In the meantime I've been looking over the provided screenshots and reading up on `init_fn_size` and `protected_size`.
+
+## 28 August 2025
+We figured out the issue. The way the sizes were computed, it included the headers as well. After fixing this, we've been testing it on a variety of apps. All 3 apps show `init_fn_size` as 41 and `protected_size` as 0, we're unsure whether it is normal or not. We also ran into a weird issue where the board would go straight into bootloader mode whenever we connected it to the PC. Despite that, none of the commands would see the bootloader. We had to reflash the board to fix this issue. Going back to my install command, it doesn't seem to work anymore. I thought maybe it's because of the recent patch but it doesn't seem to be the case. I have to look over all of the errors.
+
+## 29 August 2025
+While the problem we identified for issue [#70](https://github.com/WyliodrinEmbeddedIoT/tockloader-rs/issues/70) is mostly correct, the way we solved it wasn't. We changed parts of the code we weren't supposed to. The code we're actually supposed to fix is in `app_attributes` and not in the `info` command itself. The approach we should take is to modify the code in order to differentiate between actual apps and padding when calculating sizes. As for my own issue, turns out the problem really was with the code not being up to date. The ping approach was changed and I believe the errors were refactored as well. I managed to change the errors to the new appropriate ones and the command runs. The app appears on the list, but it won't run. After asking around, turns my board wasn't working as intended (as indicated by the strange behaviour of the `listen` command). Wiping the chip of the board with `probe-rs` and reinstalling TockOS did the trick. I was told to then check `info` and `list` commands from both the python and rust versions of `tockloader`, as well as with the `--serial` flag, to ensure the app really was installed properly. The tests ran succesfully, except for the serial commands, for which I get *"Bootloader command did not finish in time"*. At first I was told the problem might be with my laptop's lacking amount of RAM, but I tested the commands from one of the office PCs as well and got the same result.
